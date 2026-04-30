@@ -33,7 +33,7 @@ public class BusController {
         return busMapper.toBusResponseDTOList(buses);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/bus/{id}")
     public ResponseEntity<BusResponseDTO> getBusById(@PathVariable Long id) {
         Bus bus = busService.findById(id);
         return ResponseEntity.ok(busMapper.toBusResponseDTO(bus));
