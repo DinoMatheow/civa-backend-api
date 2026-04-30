@@ -96,3 +96,12 @@ El servidor corre en `http://localhost:8080`
   "createdAt": "2025-04-29T08:00:00"
 }
 ```
+
+## Ramas
+
+| Rama  | Descripción                        |
+|-------|------------------------------------|
+| main  | Versión estable lista para probar  |
+| dev   | Desarrollo, puede ser inestable    |
+
+> Para ejecutar el proyecto use la rama `main`.
