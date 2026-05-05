@@ -10,6 +10,6 @@ import com.civa.app.dto.BusResponseDTO;
 
 public interface IBusService {
     
-    Page<BusResponseDTO> findAll(String name, Pageable pageable);
+    Page<BusResponseDTO> findAll(String numberBus, Pageable pageable);
     Bus findById(Long id);
 }

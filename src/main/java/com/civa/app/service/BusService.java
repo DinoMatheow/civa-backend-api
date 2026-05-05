@@ -23,10 +23,10 @@ public class BusService implements IBusService {
     private final BusMapper busMapper;
 
     @Override
-    public Page<BusResponseDTO> findAll(String name, Pageable pageable) {
+    public Page<BusResponseDTO> findAll(String numberBus, Pageable pageable) {
         Page<Bus> busPage;
-        if(name !=null && !name.trim().isEmpty()){
-            busPage = busRepository.findByNameContainingIgnoreCase(name, pageable);
+        if(numberBus !=null && !numberBus.trim().isEmpty()){
+            busPage = busRepository.findByNumberBusContainingIgnoreCase(numberBus, pageable);
         }else {
             busPage = busRepository.findAll(pageable);
         }

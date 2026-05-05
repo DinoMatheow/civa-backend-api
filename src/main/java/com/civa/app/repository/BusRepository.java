@@ -8,6 +8,6 @@ import com.civa.app.domain.Bus;
 
 @Repository
 public interface BusRepository  extends JpaRepository<Bus, Long> {
-        Page<Bus> findByNameContainingIgnoreCase(String name,  org.springframework.data.domain.Pageable pageable);
+        Page<Bus> findByNumberBusContainingIgnoreCase(String numberBus,  org.springframework.data.domain.Pageable pageable);
 
 }   
