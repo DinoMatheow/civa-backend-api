@@ -2,11 +2,15 @@ package com.civa.app.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.civa.app.domain.Bus;
@@ -28,9 +32,13 @@ public class BusController {
     private final BusMapper busMapper;
 
     @GetMapping("/bus")
-    public List<BusResponseDTO> getAllBuses() {
-        List<Bus> buses = busService.findAll();
-        return busMapper.toBusResponseDTOList(buses);
+    public ResponseEntity<Page<BusResponseDTO>> getAllBuses(
+        @RequestParam(required = false)String name,
+        @PageableDefault(page = 0, size = 5, sort = "name")Pageable pageable
+    ) {
+        
+        Page<BusResponseDTO> buses = busService.findAll(name, pageable);
+        return ResponseEntity.ok(buses);
     }
 
     @GetMapping("/bus/{id}")
