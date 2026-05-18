@@ -33,11 +33,11 @@ public class BusController {
 
     @GetMapping("/bus")
     public ResponseEntity<Page<BusResponseDTO>> getAllBuses(
-        @RequestParam(required = false)String name,
-        @PageableDefault(page = 0, size = 5, sort = "name")Pageable pageable
+        @RequestParam(required = false)String numberBus,
+        @PageableDefault(page = 0, size = 5, sort = "numberBus")Pageable pageable
     ) {
         
-        Page<BusResponseDTO> buses = busService.findAll(name, pageable);
+        Page<BusResponseDTO> buses = busService.findAll(numberBus, pageable);
         return ResponseEntity.ok(buses);
     }
 
