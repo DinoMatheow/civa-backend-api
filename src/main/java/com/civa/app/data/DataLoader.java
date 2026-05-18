@@ -39,7 +39,7 @@ public class DataLoader implements CommandLineRunner {
                 bus.setAttributes("Actulizando...");
                 bus.setPlate("ABC-" + (100 + i));
                 bus.setStatus(Status.ACTIVO);
-                // bus.setMarcaBus("BWM");
+                bus.setMarcaBus(marcaBus);
             
                 buses.add(bus);
             } 
