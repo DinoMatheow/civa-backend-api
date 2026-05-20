@@ -43,6 +43,17 @@ public class BusService implements IBusService {
         return busRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("El ID: " + id  +" no se encontro " ));
     }
+    @Override
+    public void deleteById(Long id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
+    }
+    @Override
+    public Bus save(Bus bus) {
+        // TODO Auto-generated method stub
+        return busRepository.save(bus);
+        // throw new UnsupportedOperationException("Unimplemented method 'save'");
+    }
 
 
 }
