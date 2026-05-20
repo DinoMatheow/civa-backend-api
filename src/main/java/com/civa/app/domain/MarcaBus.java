@@ -1,5 +1,7 @@
 package com.civa.app.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,6 +19,7 @@ public class MarcaBus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long  id;
 
+    @JsonProperty("name")
     @Column(name = "name", unique = true, nullable = false)
     private String name;
 }

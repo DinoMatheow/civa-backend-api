@@ -12,4 +12,6 @@ public interface IBusService {
     
     Page<BusResponseDTO> findAll(String numberBus, Pageable pageable);
     Bus findById(Long id);
+    Bus save(Bus bus);
+    void deleteById(Long id);
 }
