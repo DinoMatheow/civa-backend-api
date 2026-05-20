@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 
 import com.civa.app.domain.Bus;
 import com.civa.app.dto.BusRequestDto;
@@ -53,12 +55,14 @@ public class BusController {
     }
 
     @PostMapping
-    public BusResponseDTO createBus(@RequestBody BusRequestDto busRequestDto) {
+    public ResponseEntity<BusResponseDTO> createBus(@Valid @RequestBody BusRequestDto busRequestDto) {
         Bus busToSave = busMapper.toEntity(busRequestDto);
         Bus savedBus = busService.save(busToSave);
-        return busMapper.toBusResponseDTO(savedBus);
+
+        BusResponseDTO busResponseDTO = busMapper.toBusResponseDTO(savedBus);
+        return new ResponseEntity<>(busResponseDTO, HttpStatus.CREATED);
+    
     }
-    // @PutMapping
 
 
 }
