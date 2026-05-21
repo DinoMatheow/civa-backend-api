@@ -20,8 +20,8 @@ public interface BusMapper {
     
     
     List<BusResponseDTO> toBusResponseDTOList(List<Bus> busList);
-    
+     
+    void updateBusFromDTO(BusRequestDto busRequestDto, @MappingTarget Bus bus);
 
-    // void updateBusFromDTO(BusRequestDto busRequestDto, @MappingTarget Bus bus);
     
 }

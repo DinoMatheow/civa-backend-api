@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
         body.put("message", "Validation failed");
         body.put("errors", errors);
 
-        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST); 
 
     }
 

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,5 +64,13 @@ public class BusController {
     
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<BusResponseDTO> 
+    updateBus(@PathVariable Long id, @Valid @RequestBody BusRequestDto busRequestDto){
+            Bus busToUpdate = busService.findById(id);
+            busMapper.updateBusFromDTO(busRequestDto, busToUpdate);
+            Bus updateBus = busService.save(busToUpdate);
+            return ResponseEntity.ok(busMapper.toBusResponseDTO(updateBus));
+    }
 
 }
