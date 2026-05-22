@@ -8,9 +8,11 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,5 +65,18 @@ public class BusController {
     
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<BusResponseDTO> 
+    updateBus(@PathVariable Long id, @Valid @RequestBody BusRequestDto busRequestDto){
+            Bus busToUpdate = busService.findById(id);
+            busMapper.updateBusFromDTO(busRequestDto, busToUpdate);
+            Bus updateBus = busService.save(busToUpdate);
+            return ResponseEntity.ok(busMapper.toBusResponseDTO(updateBus));
+    }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBus(@PathVariable Long id){
+        busService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }
