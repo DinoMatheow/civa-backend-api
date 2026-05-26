@@ -28,7 +28,6 @@ import com.civa.app.service.IBusService;
 import lombok.RequiredArgsConstructor;
 
 
-
 @CrossOrigin(origins  = "http://localhost:5173")
 @RestController
 @RequestMapping("/bus")
