@@ -45,14 +45,12 @@ public class BusService implements IBusService {
     }
     @Override
     public void deleteById(Long id) {
-        // TODO Auto-generated method stub
         Bus busToDelete = this.findById(id);
         busRepository.delete(busToDelete);
         // throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
     }
     @Override
     public Bus save(Bus bus) {
-        // TODO Auto-generated method stub
         return busRepository.save(bus);
         // throw new UnsupportedOperationException("Unimplemented method 'save'");
     }
