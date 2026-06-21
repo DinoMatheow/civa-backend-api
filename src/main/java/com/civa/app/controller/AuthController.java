@@ -30,6 +30,7 @@ public class AuthController {
             new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword())
         );
      SecurityContextHolder.getContext().setAuthentication((authentication));
+     
      return new ResponseEntity<>("Usuario autenticado correctamente", HttpStatus.OK);        
     }
 
