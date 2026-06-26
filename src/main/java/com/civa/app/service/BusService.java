@@ -13,7 +13,7 @@ import com.civa.app.mapper.BusMapper;
 import com.civa.app.repository.BusRepository;
 
 import lombok.RequiredArgsConstructor;
-
+import  com.civa.app.exception.ResourceNotFoundException;
 
 @Service
 @RequiredArgsConstructor
@@ -41,18 +41,16 @@ public class BusService implements IBusService {
     @Override
     public Bus findById(Long id) {
         return busRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("El ID: " + id  +" no se encontro " ));
+                .orElseThrow(() -> new ResourceNotFoundException("El ID: " + id  +" no se encontro " ));
     }
     @Override
     public void deleteById(Long id) {
-        // TODO Auto-generated method stub
         Bus busToDelete = this.findById(id);
         busRepository.delete(busToDelete);
         // throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
     }
     @Override
     public Bus save(Bus bus) {
-        // TODO Auto-generated method stub
         return busRepository.save(bus);
         // throw new UnsupportedOperationException("Unimplemented method 'save'");
     }

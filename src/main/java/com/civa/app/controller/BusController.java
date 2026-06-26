@@ -1,6 +1,5 @@
 package com.civa.app.controller;
 
-import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +25,6 @@ import com.civa.app.mapper.BusMapper;
 import com.civa.app.service.IBusService;
 
 import lombok.RequiredArgsConstructor;
-
 
 
 @CrossOrigin(origins  = "http://localhost:5173")
