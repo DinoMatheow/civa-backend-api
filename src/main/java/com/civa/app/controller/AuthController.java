@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.civa.app.dto.JwtAuthResponseDto;
 import com.civa.app.dto.LoginDto;
+import com.civa.app.security.jwt.JwtGenerator;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,16 +24,17 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
     private final AuthenticationManager authenticationManager;
-
+    private final JwtGenerator jwtGenerator;
 
     @PostMapping("/login")
-    public ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto){
+    public ResponseEntity<JwtAuthResponseDto> authenticateUser(@RequestBody LoginDto loginDto){
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword())
         );
      SecurityContextHolder.getContext().setAuthentication((authentication));
-     
-     return new ResponseEntity<>("Usuario autenticado correctamente", HttpStatus.OK);        
+     String token = jwtGenerator.generateToken(authentication);
+
+     return new ResponseEntity<>(new JwtAuthResponseDto(token), HttpStatus.OK);        
     }
 
 }
