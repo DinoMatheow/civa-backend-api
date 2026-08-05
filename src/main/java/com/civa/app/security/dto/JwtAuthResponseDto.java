@@ -1,4 +1,4 @@
-package com.civa.app.dto;
+package com.civa.app.security.dto;
 
 import lombok.Data;
 

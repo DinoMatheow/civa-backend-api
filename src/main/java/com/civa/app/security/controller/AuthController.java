@@ -1,4 +1,4 @@
-package com.civa.app.controller;
+package com.civa.app.security.controller;
 
 
 import java.util.Collections;
@@ -17,12 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.civa.app.domain.Role;
 import com.civa.app.domain.User;
-import com.civa.app.dto.JwtAuthResponseDto;
-import com.civa.app.dto.LoginDto;
-import com.civa.app.dto.RegisterDto;
 import com.civa.app.mapper.UserMapper;
 import com.civa.app.repository.RoleRepository;
 import com.civa.app.repository.UserRepository;
+import com.civa.app.security.dto.JwtAuthResponseDto;
+import com.civa.app.security.dto.LoginDto;
+import com.civa.app.security.dto.RegisterDto;
 import com.civa.app.security.jwt.JwtGenerator;
 
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtGenerator jwtGenerator;
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    // private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
@@ -62,8 +62,8 @@ public class AuthController {
                 User user = userMapper.registerDtoToUser(registerDto);
                 user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
 
-                Role roles = roleRepository.findByName("ROLE_USER").orElseThrow( ()-> new RuntimeException("Error, el rol no existes") ); 
-                user.setRoles(Collections.singleton(roles));
+                // Role roles = roleRepository.findByName("ROLE_USER").orElseThrow( ()-> new RuntimeException("Error, el rol no existes") ); 
+                // user.setRoles(Collections.singleton(roles));
 
                 userRepository.save(user);
 
