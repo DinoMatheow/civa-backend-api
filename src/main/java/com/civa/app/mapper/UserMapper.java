@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.civa.app.domain.Role;
 import com.civa.app.domain.User;
+import com.civa.app.exception.ResourceNotFoundException;
 import com.civa.app.repository.RoleRepository;
 import com.civa.app.security.dto.RegisterDto;
 
@@ -32,12 +33,12 @@ public abstract class UserMapper {
         if(rolesNames ==null || rolesNames.isEmpty()){
             return roleRepository.findByName("ROLE_USER")
                 .map(Collections::singleton)
-                .orElseThrow( ()-> new RuntimeException("Error: Rol 'ROLE_USER' no encontrado en la base de datos." ) );
+                .orElseThrow( ()-> new ResourceNotFoundException("Error: Rol 'ROLE_USER' no encontrado en la base de datos." ) );
         }
 
         return rolesNames.stream()
                 .map( roleName -> roleRepository.findByName(roleName) 
-                            .orElseThrow( ()-> new RuntimeException("Error: Rol no encontrado" + roleName )  ))
+                            .orElseThrow( ()-> new ResourceNotFoundException("Error: Rol no encontrado" + roleName )  ))
                 .collect(Collectors.toSet());
 
     }
