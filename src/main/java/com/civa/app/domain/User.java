@@ -36,4 +36,26 @@ public class User {
 
     )
     private Set<Role> roles = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade ={CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+        name = "user_bus",
+        joinColumns  =  @JoinColumn(name = "user_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "bus_id", referencedColumnName = "id")
+    )
+    private Set<Bus> attendeBus = new HashSet<>();
+
+    public void addAttendedBus(Bus bus) {
+        this.attendeBus.add(bus);
+        bus.getAttendes().add(this);
+    }
+    public void removeAttendedBus(Bus bus) {
+        this.attendeBus.remove(bus);
+        bus.getAttendes().remove(this);
+    }
+
+
+    
+
+    
 }

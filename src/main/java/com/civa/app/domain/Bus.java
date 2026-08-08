@@ -64,4 +64,15 @@ public class Bus {
     @ManyToMany(mappedBy = "attendeBus", fetch = FetchType.LAZY)
     private Set<User> attendes = new HashSet<>();
 
+    public void addDrivers(Driver driver) {
+        this.drivers.add(driver);
+        driver.getBuses().add(this);
+    }
+    public void removeDrivers(Driver driver) {
+        this.drivers.remove(driver);
+        driver.getBuses().remove(this);
+    }
+
+
+
 }
