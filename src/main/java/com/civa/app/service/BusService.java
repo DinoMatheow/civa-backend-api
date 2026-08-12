@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.civa.app.domain.Bus;
 import com.civa.app.dto.BusResponseDTO;
@@ -23,6 +24,7 @@ public class BusService implements IBusService {
     private final BusMapper busMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public Page<BusResponseDTO> findAll(String numberBus, Pageable pageable) {
         Page<Bus> busPage;
         if(numberBus !=null && !numberBus.trim().isEmpty()){
@@ -39,17 +41,20 @@ public class BusService implements IBusService {
         // return busRepository.findAll();
     }
     @Override
+    @Transactional(readOnly = true)
     public Bus findById(Long id) {
         return busRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("El ID: " + id  +" no se encontro " ));
     }
     @Override
+    @Transactional
     public void deleteById(Long id) {
         Bus busToDelete = this.findById(id);
         busRepository.delete(busToDelete);
         // throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
     }
     @Override
+    @Transactional
     public Bus save(Bus bus) {
         return busRepository.save(bus);
         // throw new UnsupportedOperationException("Unimplemented method 'save'");

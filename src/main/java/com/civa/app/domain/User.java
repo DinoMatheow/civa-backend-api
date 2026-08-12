@@ -47,11 +47,11 @@ public class User {
 
     public void addAttendedBus(Bus bus) {
         this.attendeBus.add(bus);
-        bus.getAttendes().add(this);
+        bus.getAttendedUsers().add(this);
     }
     public void removeAttendedBus(Bus bus) {
         this.attendeBus.remove(bus);
-        bus.getAttendes().remove(this);
+        bus.getAttendedUsers().remove(this);
     }
 
 

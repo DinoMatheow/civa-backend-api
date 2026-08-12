@@ -19,7 +19,7 @@ public interface BusMapper {
    @Mapping(target = "id", ignore = true )
    @Mapping(target = "category", ignore = true )
    @Mapping(target = "drivers", ignore = true )
-   @Mapping(target = "attendes", ignore = true )
+   @Mapping(target = "attendedUsers", ignore = true )
 
     Bus toEntity(BusRequestDto busRequestDto);
 
@@ -31,12 +31,12 @@ public interface BusMapper {
    @Mapping(target = "id", ignore = true)
    @Mapping(target = "category", ignore = true)
    @Mapping(target = "drivers", ignore = true)
-   @Mapping(target = "attendes", ignore = true)
+   @Mapping(target = "attendedUsers", ignore = true)
     void updateBusFromDTO(BusRequestDto busRequestDto, @MappingTarget Bus bus);
 
-    BusSummaryDto tSummaryDto(Bus bus);
+    BusSummaryDto toSummaryDto(Bus bus);
 
-    List<BusSummaryDto> tSummaryDtosList(List<Bus> bus);
+    List<BusSummaryDto> toSummaryDtosList(List<Bus> bus);
 
    
 }
