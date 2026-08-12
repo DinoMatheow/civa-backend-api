@@ -10,11 +10,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.civa.app.domain.Bus;
+import com.civa.app.domain.Category;
+import com.civa.app.domain.Driver;
 import com.civa.app.domain.MarcaBus;
 import com.civa.app.domain.Role;
 import com.civa.app.domain.Status;
 import com.civa.app.domain.User;
 import com.civa.app.repository.BusRepository;
+import com.civa.app.repository.CategoryRepository;
+import com.civa.app.repository.DriverRepository;
 import com.civa.app.repository.MarcaBusRepository;
 import com.civa.app.repository.RoleRepository;
 import com.civa.app.repository.UserRepository;
@@ -31,6 +35,9 @@ public class DataLoader implements CommandLineRunner {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CategoryRepository categoryRepository;
+    private final DriverRepository driverRepository;
+
     
     @Override
     @Transactional
@@ -74,7 +81,7 @@ public class DataLoader implements CommandLineRunner {
 
         Set<Role> userRoles = new HashSet<>();
         userRoles.add(userRole);
-        regularUser.setRoles(userRoles);;
+        regularUser.setRoles(userRoles);
         
         userRepository.save(regularUser);
         System.out.println("Usuario 'user' creado.");
@@ -103,8 +110,36 @@ public class DataLoader implements CommandLineRunner {
             busRepository.saveAll(buses);
             System.out.println("Insertando" + buses.size() + "buses" );
         }
+        
+        if (!categoryRepository.existsByName("Conferencia")) {
+            Category conferencia = new Category(null, "Conferencia", "Eventos de gran escala con múltiples oradores.");
+            categoryRepository.save(conferencia);
+        }
+        if (!categoryRepository.existsByName("Taller")) {
+            Category taller = new Category(null, "Taller", "Eventos interactivos y prácticos.");
+            categoryRepository.save(taller);
+        }
+        if (!categoryRepository.existsByName("Webinar")) {
+            Category webinar = new Category(null, "Webinar", "Seminarios online en vivo.");
+            categoryRepository.save(webinar);
+        }
+
+        // --- 5. Crear y Guardar Oradores si no existen ---
+        if (!driverRepository.existsByEmail("john.doe@example.com")) {
+            Driver john = new Driver(null, "John Doe", "john.doe@example.com", "Experto en desarrollo de software.", new HashSet<>());
+            driverRepository.save(john);
+        }
+        if (!driverRepository.existsByEmail("jane.smith@example.com")) {
+            Driver jane = new Driver(null, "Jane Smith", "jane.smith@example.com", "Especialista en marketing digital.", new HashSet<>());
+            driverRepository.save(jane);
+        }
+         
+
+
 
     }
+
+
 
 
 

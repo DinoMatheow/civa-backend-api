@@ -1,6 +1,7 @@
 package com.civa.app.mapper;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.civa.app.domain.Role;
 import com.civa.app.domain.User;
+import com.civa.app.dto.UserResponseDto;
 import com.civa.app.exception.ResourceNotFoundException;
 import com.civa.app.repository.RoleRepository;
 import com.civa.app.security.dto.RegisterDto;
@@ -24,7 +26,11 @@ public abstract class UserMapper {
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "roles", source = "registerDto.roles", qualifiedByName = "mapRoleStringToRoles" )
+    @Mapping(target = "attendeBus", ignore = true)
     public abstract User registerDtoToUser(RegisterDto registerDto);
+
+    public  abstract UserResponseDto tUserResponseDto(User user); 
+    public  abstract List<UserResponseDto> toUserResponseDtoList(List<User> users);
 
 
     @Named("mapRoleStringToRoles")

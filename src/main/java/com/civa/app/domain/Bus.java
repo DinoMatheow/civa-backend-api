@@ -58,7 +58,7 @@ public class Bus {
     private Set<Driver> drivers = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_id", nullable = true)
     private Category category;
 
     @ManyToMany(mappedBy = "attendeBus", fetch = FetchType.LAZY)
