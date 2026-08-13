@@ -44,14 +44,14 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable Long id) {
+    public ResponseEntity<CategoryDto> getCategoryById(@Valid@PathVariable Long id) {
         Category category = categoryService.findById(id);
         return ResponseEntity.ok(categoryMapper.toDto(category));
     }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public ResponseEntity<CategoryDto> postMethodName(@Valid @RequestBody CategoryDto categoryDto) {
+    public ResponseEntity<CategoryDto> postCreateCategory(@Valid @RequestBody CategoryDto categoryDto) {
         Category categoryToCreate = categoryMapper.toEntity(categoryDto);
 
         Category createdCategory = categoryService.save(categoryToCreate);
@@ -59,7 +59,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long id, @Valid @RequestBody CategoryDto categoryDto) {
         Category categoryToUpdate = categoryMapper.toEntity(categoryDto);
         Category updatedCategory = categoryService.update(id, categoryToUpdate);
@@ -67,7 +67,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         categoryService.deleteById(id);
         return ResponseEntity.noContent().build();
