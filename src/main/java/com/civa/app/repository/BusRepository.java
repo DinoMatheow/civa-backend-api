@@ -11,3 +11,4 @@ public interface BusRepository  extends JpaRepository<Bus, Long> {
         Page<Bus> findByNumberBusContainingIgnoreCase(String numberBus,  org.springframework.data.domain.Pageable pageable);
 
 }   
+    

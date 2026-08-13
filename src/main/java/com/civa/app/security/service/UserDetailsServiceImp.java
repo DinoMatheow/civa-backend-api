@@ -1,4 +1,4 @@
-package com.civa.app.service;
+package com.civa.app.security.service;
 
 import java.util.Collection;
 import java.util.Set;

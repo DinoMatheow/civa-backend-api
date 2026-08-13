@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 
 @CrossOrigin(origins  = "http://localhost:5173")
 @RestController
-@RequestMapping("/bus")
+@RequestMapping("/api/v1/bus")
 @RequiredArgsConstructor
 public class BusController {
     
@@ -37,6 +38,7 @@ public class BusController {
     private final BusMapper busMapper;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Page<BusResponseDTO>> getAllBuses(
         @RequestParam(required = false)String numberBus,
         @PageableDefault(page = 0, size = 5, sort = "numberBus")Pageable pageable
@@ -46,7 +48,8 @@ public class BusController {
         return ResponseEntity.ok(buses);
     }
 
-    @GetMapping("/bus/{id}")
+    @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<BusResponseDTO> getBusById(@PathVariable Long id) {
         Bus bus = busService.findById(id);
         return ResponseEntity.ok(busMapper.toBusResponseDTO(bus));
@@ -54,6 +57,7 @@ public class BusController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<BusResponseDTO> createBus(@Valid @RequestBody BusRequestDto busRequestDto) {
         Bus busToSave = busMapper.toEntity(busRequestDto);
         Bus savedBus = busService.save(busToSave);
@@ -64,6 +68,7 @@ public class BusController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<BusResponseDTO> 
     updateBus(@PathVariable Long id, @Valid @RequestBody BusRequestDto busRequestDto){
             Bus busToUpdate = busService.findById(id);
@@ -73,6 +78,7 @@ public class BusController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Void> deleteBus(@PathVariable Long id){
         busService.deleteById(id);
         return ResponseEntity.noContent().build();
