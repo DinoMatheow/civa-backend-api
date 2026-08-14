@@ -25,7 +25,7 @@ public class CategoryServiceImple implements CategoryService {
 
     }
 
-    @Override
+    @Override   
     @Transactional(readOnly = true)
     public Category findById(Long id) {
         return categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + id));

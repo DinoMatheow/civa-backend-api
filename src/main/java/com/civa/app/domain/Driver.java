@@ -11,7 +11,9 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @Entity
@@ -32,6 +34,8 @@ public class Driver {
     private String bio;
 
     @ManyToMany(mappedBy = "drivers")
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<Bus> buses;
 
     
