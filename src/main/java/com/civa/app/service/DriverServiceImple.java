@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.civa.app.domain.Driver;
+import com.civa.app.dto.DriverRequestDto;
 import com.civa.app.exception.ResourceNotFoundException;
+import com.civa.app.mapper.DriverMapper;
 import com.civa.app.repository.DriverRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 public class DriverServiceImple implements DriverService {
     
     private final DriverRepository driverRepository;
+    private final DriverMapper driverMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -26,25 +29,25 @@ public class DriverServiceImple implements DriverService {
     @Override
     @Transactional(readOnly = true)
     public Driver findById(Long id) {
+        
         return driverRepository.findById(id).orElseThrow(
             () -> new ResourceNotFoundException("Driver not found with id: " + id));
     }
 
     @Override
     @Transactional
-    public Driver save(Driver driver) {
+    public Driver save(DriverRequestDto requestDto) {
+        Driver driver = driverMapper.toEntity(requestDto);
         return driverRepository.save(driver);
     }
 
     @Override
     @Transactional
-    public Driver update(Long id, Driver driver) {
+    public Driver update(Long id, DriverRequestDto requestDto) {
         Driver existingDriver = driverRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Driver not found with id: " + id));
-        existingDriver.setName(driver.getName());
-        existingDriver.setEmail(driver.getEmail());
-        existingDriver.setBio(driver.getBio());
-        return driverRepository.save(existingDriver);
+                driverMapper.updateDriverFromDto(requestDto, existingDriver);
+                return driverRepository.save(existingDriver);
     }
 
     @Override

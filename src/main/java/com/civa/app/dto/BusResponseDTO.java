@@ -17,7 +17,7 @@ public class BusResponseDTO {
     private String status;
     private String marcaBus;
     private Category category;
-    private List<DriverDto> driverDto;
+    private List<DriverResponseDto> driverDto;
 }
 
 

@@ -3,6 +3,7 @@ package com.civa.app.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.civa.app.domain.Driver;
+import com.civa.app.dto.DriverRequestDto;
 import com.civa.app.dto.DriverResponseDto;
 import com.civa.app.mapper.DriverMapper;
 import com.civa.app.service.DriverService;
@@ -20,10 +21,10 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 
@@ -41,9 +42,7 @@ public class DriverController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<List<DriverResponseDto>> getAllDrivers() {
         List<Driver> drivers = driverService.findAll();
-        return ResponseEntity.ok(drivers.stream()
-                .map(driverMapper::toDto)
-                .collect(Collectors.toList()));
+        return ResponseEntity.ok(driverMapper.toResponseToList(drivers));
     }
 
     @GetMapping("/{id}")
@@ -55,17 +54,15 @@ public class DriverController {
 
     @PostMapping()
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<DriverResponseDto> postCreateDriver(@Valid @RequestBody DriverResponseDto driverDto) {
-        Driver driverToCreate = driverMapper.toEntity(driverDto);
-        Driver createdDriver = driverService.save(driverToCreate);
+    public ResponseEntity<DriverResponseDto> postCreateDriver(@Valid @RequestBody DriverRequestDto requestDto) {
+        Driver createdDriver = driverService.save(requestDto);
         return new ResponseEntity<>(driverMapper.toDto(createdDriver), HttpStatus.CREATED);        
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<DriverResponseDto> updateDriver(@PathVariable Long id, @Valid @RequestBody DriverResponseDto driverDto) {
-        Driver driverToUpdate = driverMapper.toEntity(driverDto);
-        Driver updatedDriver = driverService.update(id, driverToUpdate);
+    public ResponseEntity<DriverResponseDto> updateDriver(@PathVariable Long id, @Valid @RequestBody DriverRequestDto requestDto) {
+        Driver updatedDriver = driverService.update(id, requestDto);
         return ResponseEntity.ok(driverMapper.toDto(updatedDriver));
     }
 

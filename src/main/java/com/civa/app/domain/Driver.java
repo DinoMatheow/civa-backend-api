@@ -1,5 +1,6 @@
 package com.civa.app.domain;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.Column;
@@ -36,7 +37,7 @@ public class Driver {
     @ManyToMany(mappedBy = "drivers")
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    private Set<Bus> buses;
+    private Set<Bus> buses = new HashSet<>();
 
     
 }
