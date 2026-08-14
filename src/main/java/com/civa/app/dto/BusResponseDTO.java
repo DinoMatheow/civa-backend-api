@@ -1,9 +1,8 @@
 package com.civa.app.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
-import com.civa.app.domain.Category;
 
 import lombok.Data;
 
@@ -15,9 +14,13 @@ public class BusResponseDTO {
     private LocalDateTime createdAt;
     private String attributes;
     private String status;
+    
     private String marcaBus;
-    private Category category;
-    private List<DriverResponseDto> driverDto;
+    
+    private Long categoryBusId;
+    private String categoryBusName;
+
+    private Set<DriverResponseDto> driverDto;
 }
 
 

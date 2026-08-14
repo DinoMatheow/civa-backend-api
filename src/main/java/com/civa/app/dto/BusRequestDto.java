@@ -1,6 +1,8 @@
  package com.civa.app.dto;
 
 
+import java.util.Set;
+
 import com.civa.app.domain.MarcaBus;
 import com.civa.app.domain.Status;
 
@@ -26,4 +28,10 @@ public class BusRequestDto {
     @NotNull(message = "La marca del bus no puede ser nula")
     @Valid
     private MarcaBus marcaBus;
+
+    @NotNull(message = "La categoría del bus no puede ser nula")
+    private Long categoryBusId;
+
+    private Set<Long> driversIds;
+
 }

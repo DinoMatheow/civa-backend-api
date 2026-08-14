@@ -20,10 +20,12 @@ public interface BusMapper {
    @Mapping(target = "category", ignore = true )
    @Mapping(target = "drivers", ignore = true )
    @Mapping(target = "attendedUsers", ignore = true )
-
     Bus toEntity(BusRequestDto busRequestDto);
 
     @Mapping(source = "marcaBus.name", target = "marcaBus")
+    @Mapping(source = "category.id", target = "categoryBusId")
+    @Mapping(source = "category.name", target = "categoryBusName")
+    @Mapping(source = "drivers", target = "driverDto")
     BusResponseDTO toBusResponseDTO(Bus bus);
     List<BusResponseDTO> toBusResponseDTOList(List<Bus> busList);
      
