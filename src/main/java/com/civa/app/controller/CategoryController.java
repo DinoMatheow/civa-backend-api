@@ -34,8 +34,10 @@ public class CategoryController {
     private final CategoryMapper categoryMapper;
     
     @GetMapping()
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<List<CategoryDto>> getAllCategories(){
         List<Category> categories = categoryService.findAll();
+       
         return ResponseEntity.ok(categories.stream()
         .map(categoryMapper::toDto)
         .collect(Collectors.toList())

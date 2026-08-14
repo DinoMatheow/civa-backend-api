@@ -9,8 +9,6 @@ import com.civa.app.domain.Category;
 import com.civa.app.exception.ResourceNotFoundException;
 import com.civa.app.repository.CategoryRepository;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 
