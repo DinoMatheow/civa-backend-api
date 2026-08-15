@@ -59,10 +59,9 @@ public class BusController {
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<BusResponseDTO> createBus(@Valid @RequestBody BusRequestDto busRequestDto) {
-        Bus busToSave = busMapper.toEntity(busRequestDto);
-        Bus savedBus = busService.save(busToSave);
-
+        Bus savedBus = busService.save(busRequestDto);
         BusResponseDTO busResponseDTO = busMapper.toBusResponseDTO(savedBus);
+
         return new ResponseEntity<>(busResponseDTO, HttpStatus.CREATED);
     
     }
@@ -71,9 +70,7 @@ public class BusController {
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<BusResponseDTO> 
     updateBus(@PathVariable Long id, @Valid @RequestBody BusRequestDto busRequestDto){
-            Bus busToUpdate = busService.findById(id);
-            busMapper.updateBusFromDTO(busRequestDto, busToUpdate);
-            Bus updateBus = busService.save(busToUpdate);
+            Bus updateBus = busService.update(id, busRequestDto);
             return ResponseEntity.ok(busMapper.toBusResponseDTO(updateBus));
     }
 
