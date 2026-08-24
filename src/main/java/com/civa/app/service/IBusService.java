@@ -1,6 +1,8 @@
 package com.civa.app.service;
 
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,4 +18,5 @@ public interface IBusService {
     Bus save(BusRequestDto busRequestDto);
     Bus update(Long id, BusRequestDto busRequestDto);
     void deleteById(Long id); 
+    List<Bus> getAllBusAndTheirDetailsProblematic();
 }

@@ -31,6 +31,8 @@ public class BusService implements IBusService {
     private final CategoryService categoryService;
     private final DriverService driverService;
 
+    
+
     @Override
     @Transactional(readOnly = true)
     public Page<BusResponseDTO> findAll(String numberBus, Pageable pageable) {
@@ -116,5 +118,18 @@ public class BusService implements IBusService {
         return busRepository.save(existingBus);
     }
 
+    @Transactional
+    public List<Bus> getAllBusAndTheirDetailsProblematic(){
+        List<Bus> buses = busRepository.findAll();
+
+        buses.forEach( bus -> {
+            bus.getDrivers().size();
+            bus.getDrivers().stream().map(Driver::getName).collect(Collectors.toSet());
+            bus.getCategory().getName();
+            bus.getAttendedUsers().size();
+        });
+
+        return buses;
+    }
 
 }

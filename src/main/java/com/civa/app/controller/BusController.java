@@ -1,6 +1,8 @@
 package com.civa.app.controller;
 
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -36,6 +38,15 @@ public class BusController {
     
     private final IBusService busService;
     private final BusMapper busMapper;
+
+
+    @GetMapping("/problematic")
+    public ResponseEntity<List<Bus>> getAllBusesProblematics(){
+        List<Bus> buses = busService.getAllBusAndTheirDetailsProblematic();
+        return ResponseEntity.ok(buses);
+    }
+
+
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
