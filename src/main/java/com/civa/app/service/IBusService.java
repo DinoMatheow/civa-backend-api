@@ -19,4 +19,6 @@ public interface IBusService {
     Bus update(Long id, BusRequestDto busRequestDto);
     void deleteById(Long id); 
     List<Bus> getAllBusAndTheirDetailsProblematic();
+
+    List<Bus> getAllBusAndTheirDetailsOptimizeWithJoinFetch();
 }

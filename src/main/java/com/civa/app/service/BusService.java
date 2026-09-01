@@ -125,11 +125,31 @@ public class BusService implements IBusService {
         buses.forEach( bus -> {
             bus.getDrivers().size();
             bus.getDrivers().stream().map(Driver::getName).collect(Collectors.toSet());
+            if (bus.getCategory() != null) {
             bus.getCategory().getName();
+        }
             bus.getAttendedUsers().size();
         });
 
         return buses;
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<Bus> getAllBusAndTheirDetailsOptimizeWithJoinFetch(){
+        List<Bus> buses = busRepository.findAllWithCategoryAndDrivers();
+
+         buses.forEach( bus -> {
+            bus.getDrivers().size();
+            bus.getDrivers().stream().map(Driver::getName).collect(Collectors.toSet());
+            if (bus.getCategory() != null) {
+            bus.getCategory().getName();
+        }
+            bus.getAttendedUsers().size();
+        }); 
+
+        return buses;
+
     }
 
 }

@@ -46,6 +46,12 @@ public class BusController {
         return ResponseEntity.ok(buses);
     }
 
+    @GetMapping("/optimize")
+    public ResponseEntity<List<Bus>> getAllBusesOptimizedWithJoinFetch(){
+        List<Bus> buses = busService.getAllBusAndTheirDetailsOptimizeWithJoinFetch();
+        return ResponseEntity.ok(buses);
+    }
+
 
 
     @GetMapping
