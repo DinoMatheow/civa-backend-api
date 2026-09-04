@@ -41,14 +41,23 @@ public class BusController {
 
 
     @GetMapping("/problematic")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<List<Bus>> getAllBusesProblematics(){
         List<Bus> buses = busService.getAllBusAndTheirDetailsProblematic();
         return ResponseEntity.ok(buses);
     }
 
     @GetMapping("/optimize")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<List<Bus>> getAllBusesOptimizedWithJoinFetch(){
         List<Bus> buses = busService.getAllBusAndTheirDetailsOptimizeWithJoinFetch();
+        return ResponseEntity.ok(buses);
+    }
+
+    @GetMapping("/optimize-all-details")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<List<Bus>> getAllBusesOptimizedWithJoinFetchAllDetails(){
+        List<Bus> buses = busService.getAllBusAndTheirDetailsOptimizeWithJoinFetchAllDetails();
         return ResponseEntity.ok(buses);
     }
 

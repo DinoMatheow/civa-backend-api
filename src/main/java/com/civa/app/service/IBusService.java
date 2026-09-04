@@ -21,4 +21,6 @@ public interface IBusService {
     List<Bus> getAllBusAndTheirDetailsProblematic();
 
     List<Bus> getAllBusAndTheirDetailsOptimizeWithJoinFetch();
+
+     List<Bus> getAllBusAndTheirDetailsOptimizeWithJoinFetchAllDetails();
 }

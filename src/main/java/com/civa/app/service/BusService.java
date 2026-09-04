@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.civa.app.domain.Bus;
 import com.civa.app.domain.Category;
 import com.civa.app.domain.Driver;
+import com.civa.app.domain.User;
 import com.civa.app.dto.BusRequestDto;
 import com.civa.app.dto.BusResponseDTO;
 import com.civa.app.mapper.BusMapper;
@@ -151,5 +152,30 @@ public class BusService implements IBusService {
         return buses;
 
     }
+
+
+    @Transactional(readOnly = true)
+    public List<Bus> getAllBusAndTheirDetailsOptimizeWithJoinFetchAllDetails(){
+        List<Bus> buses = busRepository.findAllWithAllDetails();
+
+         buses.forEach( bus -> {
+            bus.getNumberBus();
+            if(bus.getDrivers() != null && !bus.getDrivers().isEmpty()) {
+                bus.getDrivers().stream().map(Driver::getName).collect(Collectors.joining(", "));
+            }
+            if (bus.getCategory() != null) {
+            bus.getCategory().getName();
+        }
+        
+            if(bus.getAttendedUsers() != null && !bus.getAttendedUsers().isEmpty()) {
+                bus.getAttendedUsers().stream().map(User::getUsername).collect(Collectors.joining(", "));
+            }
+        }); 
+
+        return buses;
+
+    }
+
+
 
 }
