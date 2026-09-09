@@ -39,7 +39,7 @@ import io.micrometer.common.lang.NonNull;
                 Optional<Bus> findById(Long id);
 
 
-                @EntityGraph(attributePaths = {"category", "drivers", "attendedUsers"})
+                @EntityGraph(attributePaths = {"category", "drivers", "attendedUsers", "marcaBus"})
                 @Query("SELECT e FROM Bus e ")     
                 List<Bus> findAllWithAllDetails(); 
 
