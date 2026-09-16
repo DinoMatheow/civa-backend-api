@@ -64,7 +64,7 @@ public class BusController {
 
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    // @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Page<BusResponseDTO>> getAllBuses(
         @RequestParam(required = false)String numberBus,
         @PageableDefault(page = 0, size = 5, sort = "numberBus")Pageable pageable
@@ -75,7 +75,7 @@ public class BusController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    // @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<BusResponseDTO> getBusById(@PathVariable Long id) {
         Bus bus = busService.findById(id);
         return ResponseEntity.ok(busMapper.toBusResponseDTO(bus));
