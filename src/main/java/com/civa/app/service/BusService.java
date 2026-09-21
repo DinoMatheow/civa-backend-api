@@ -55,7 +55,7 @@ public class BusService implements IBusService {
     @Transactional(readOnly = true)
     public Bus findById(Long id) {
         return busRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("El ID: " + id  +" no se encontro " ));
+                .orElseThrow(() -> new ResourceNotFoundException("El ID: " + id  +" no se encontro" ));
     }
     @Override
     @Transactional

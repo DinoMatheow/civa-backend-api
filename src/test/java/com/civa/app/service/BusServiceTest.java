@@ -1,8 +1,11 @@
 package com.civa.app.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -12,14 +15,13 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.data.domain.PageRequest;
 
 import com.civa.app.domain.Bus;
@@ -30,8 +32,6 @@ import com.civa.app.dto.BusResponseDTO;
 import com.civa.app.exception.ResourceNotFoundException;
 import com.civa.app.mapper.BusMapper;
 import com.civa.app.repository.BusRepository;
-
-import net.bytebuddy.asm.Advice.AssignReturned.AsScalar;
 
 @ExtendWith(MockitoExtension.class) 
 public class BusServiceTest {
@@ -45,6 +45,7 @@ public class BusServiceTest {
 
     @Mock 
     private  CategoryService categoryService;
+
 
     @Mock 
     private  DriverService driverService;
@@ -109,13 +110,54 @@ public class BusServiceTest {
             busService.findById(99L);
            });
 
-           assertEquals("Evento no encontrado con id:99", thrown.getMessage());
+           assertEquals("El ID: 99 no se encontro", thrown.getMessage());
 
            verify(busRepository, times(1)).findById(99L);
     }
 
+    @Test
+    @DisplayName("Debe guarda un Bus exitosamenete con tageoria y conductores")
+    void shouldSaveBusSuccesFulyWithCategory(){
+        Bus  busWithoutId = new Bus();
+        busWithoutId.setNumberBus(busRequestDto.getNumberBus());
+        busWithoutId.setMarcaBus(busRequestDto.getMarcaBus());
+        busWithoutId.setPlate(busRequestDto.getPlate());
+        busWithoutId.setStatus(busRequestDto.getStatus());
+        when(busMapper.toEntity(any(BusRequestDto.class))).thenReturn(busWithoutId);
+
+        when(categoryService.findById(busRequestDto.getCategoryBusId())).thenReturn(category);
+
+        when(driverService.findById(10L)).thenReturn(driver);
 
 
+        when(busRepository.save(any(Bus.class))).thenAnswer(
+            invocation -> {
+                Bus savedBus = invocation.getArgument(0);
+                savedBus.setId(1L);
+                return savedBus;
+            });
+
+
+        Bus savedBus = busService.save(busRequestDto);
+        assertNotNull(savedBus);
+        assertEquals(1L, savedBus.getId());
+        assertEquals(busRequestDto.getNumberBus(), savedBus.getNumberBus());
+        assertEquals(category, savedBus.getCategory());
+        assertEquals(2, savedBus.getDrivers().size());
+
+        assertTrue(savedBus.getDrivers().contains(driver));
+
+        verify(busMapper, times(1)).toEntity(busRequestDto);
+        verify(categoryService, times(1)).findById(busRequestDto.getCategoryBusId());
+        verify(driverService, times(1)).findById(10L);
+        verify(busRepository, times(1)).save(any(Bus.class));
+    }
+
+    @Test
+    @DisplayName("Debe guardar un bus exitoxamenete sin oradores")
+    void shouldSaveBusSuccesFulyWithDrivers(){
+        
+    }
 
 
 
