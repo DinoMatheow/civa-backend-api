@@ -1,6 +1,8 @@
 package com.civa.app.controller;
 
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -37,8 +39,32 @@ public class BusController {
     private final IBusService busService;
     private final BusMapper busMapper;
 
-    @GetMapping
+
+    @GetMapping("/problematic")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<List<Bus>> getAllBusesProblematics(){
+        List<Bus> buses = busService.getAllBusAndTheirDetailsProblematic();
+        return ResponseEntity.ok(buses);
+    }
+
+    @GetMapping("/optimize")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<List<Bus>> getAllBusesOptimizedWithJoinFetch(){
+        List<Bus> buses = busService.getAllBusAndTheirDetailsOptimizeWithJoinFetch();
+        return ResponseEntity.ok(buses);
+    }
+
+    @GetMapping("/optimize-all-details")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<List<Bus>> getAllBusesOptimizedWithJoinFetchAllDetails(){
+        List<Bus> buses = busService.getAllBusAndTheirDetailsOptimizeWithJoinFetchAllDetails();
+        return ResponseEntity.ok(buses);
+    }
+
+
+
+    @GetMapping
+    // @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<Page<BusResponseDTO>> getAllBuses(
         @RequestParam(required = false)String numberBus,
         @PageableDefault(page = 0, size = 5, sort = "numberBus")Pageable pageable
@@ -49,7 +75,7 @@ public class BusController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    // @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<BusResponseDTO> getBusById(@PathVariable Long id) {
         Bus bus = busService.findById(id);
         return ResponseEntity.ok(busMapper.toBusResponseDTO(bus));
@@ -59,10 +85,9 @@ public class BusController {
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<BusResponseDTO> createBus(@Valid @RequestBody BusRequestDto busRequestDto) {
-        Bus busToSave = busMapper.toEntity(busRequestDto);
-        Bus savedBus = busService.save(busToSave);
-
+        Bus savedBus = busService.save(busRequestDto);
         BusResponseDTO busResponseDTO = busMapper.toBusResponseDTO(savedBus);
+
         return new ResponseEntity<>(busResponseDTO, HttpStatus.CREATED);
     
     }
@@ -71,9 +96,7 @@ public class BusController {
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<BusResponseDTO> 
     updateBus(@PathVariable Long id, @Valid @RequestBody BusRequestDto busRequestDto){
-            Bus busToUpdate = busService.findById(id);
-            busMapper.updateBusFromDTO(busRequestDto, busToUpdate);
-            Bus updateBus = busService.save(busToUpdate);
+            Bus updateBus = busService.update(id, busRequestDto);
             return ResponseEntity.ok(busMapper.toBusResponseDTO(updateBus));
     }
 

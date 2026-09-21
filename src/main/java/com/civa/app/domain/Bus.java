@@ -19,6 +19,8 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Data
 @Entity
@@ -54,7 +56,10 @@ public class Bus {
             name = "bus_driver",
             joinColumns = @JoinColumn(name = "bus_id"),
             inverseJoinColumns = @JoinColumn(name = "driver_id")
+
     )
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<Driver> drivers = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
@@ -62,6 +67,8 @@ public class Bus {
     private Category category;
 
     @ManyToMany(mappedBy = "attendeBus", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Set<User> attendedUsers = new HashSet<>();
 
     public void addDrivers(Driver driver) {
