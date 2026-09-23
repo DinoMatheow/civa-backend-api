@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -143,7 +144,7 @@ public class BusServiceTest {
         assertEquals(1L, savedBus.getId());
         assertEquals(busRequestDto.getNumberBus(), savedBus.getNumberBus());
         assertEquals(category, savedBus.getCategory());
-        assertEquals(2, savedBus.getDrivers().size());
+        assertEquals(1, savedBus.getDrivers().size());
 
         assertTrue(savedBus.getDrivers().contains(driver));
 
@@ -154,9 +155,70 @@ public class BusServiceTest {
     }
 
     @Test
-    @DisplayName("Debe guardar un bus exitoxamenete sin oradores")
+    @DisplayName("Debe guardar un bus exitoxamenete sin drivers")
     void shouldSaveBusSuccesFulyWithDrivers(){
+        busRequestDto.setDriversIds(null);
+
+        Bus busWithOutId = new Bus();
+
+        busWithOutId.setNumberBus(busRequestDto.getNumberBus());
+        busWithOutId.setAttributes(busRequestDto.getAttributes());
+        busWithOutId.setPlate(busRequestDto.getPlate());
+
+         when(busMapper.toEntity(any(BusRequestDto.class))).thenReturn(busWithOutId);
+
+        when(categoryService.findById(busRequestDto.getCategoryBusId())).thenReturn(category);
+
+        // when(driverService.findById(10L)).thenReturn(driver);
+
+
+        when(busRepository.save(any(Bus.class))).thenAnswer(
+            invocation -> {
+                Bus savedBus = invocation.getArgument(0);
+                savedBus.setId(1L);
+                return savedBus;
+            });
+
+
+        Bus savedBus = busService.save(busRequestDto);
+        assertNotNull(savedBus);
+        assertEquals(1L, savedBus.getId());
+        assertEquals(busRequestDto.getNumberBus(), savedBus.getNumberBus());
+        assertEquals(category, savedBus.getCategory());
+        assertTrue(savedBus.getDrivers().isEmpty());
+
+        verify(busMapper, times(1)).toEntity(busRequestDto);
+        verify(categoryService, times(1)).findById(busRequestDto.getCategoryBusId());
+        verify(driverService, never()).findById(anyLong());
+        verify(busRepository, times(1)).save(any(Bus.class));
         
+
+
+    }
+
+
+
+    @Test 
+    @DisplayName("Debe lanzar ResourceNotFountException si la categoria no existe al guardar")
+    void shouldThoewReosurceNotFoundExceptionWhenCategoryNotFoundOnSace(){
+        Bus busWithOutId = new Bus();
+
+        when(busMapper.toEntity(any(BusRequestDto.class))).thenReturn(busWithOutId);
+
+        when(categoryService.findById((anyLong()))).thenThrow(
+            new ResourceNotFoundException("Category not found with id:" + busRequestDto.getCategoryBusId()));
+
+
+        ResourceNotFoundException thrown = assertThrows(ResourceNotFoundException.class,  ()-> {
+                busService.save(busRequestDto);
+        });
+
+        assertEquals("Category not found with id:"  + busRequestDto.getCategoryBusId(), thrown.getMessage());
+
+        verify(busRepository, never()).save(any(Bus.class));
+
+
+
     }
 
 
