@@ -5,25 +5,33 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 
 import com.civa.app.domain.Bus;
 import com.civa.app.domain.Category;
@@ -222,6 +230,54 @@ public class BusServiceTest {
     }
 
 
+    @Test
+    @DisplayName("Debe retornar  una pagina de buses sin filtro de nombre")
+    void shouldRetunrPageOfBusWithoutNameFilter(){
+        List <Bus> buses = Collections.singletonList(bus);
+        Page<Bus> busPage = new PageImpl<>(buses, pageable, 1);
+
+        when(busRepository.findAll(pageable)).thenReturn(busPage);
+        when(busMapper.toBusResponseDTO(any(Bus.class))).thenReturn(busResponseDTO);
+
+        Page<BusResponseDTO> result = busService.findAll(null, pageable);
+
+        assertNotNull(result);
+        assertEquals( 1, result.getTotalElements());
+        assertEquals(1, result.getContent().size());
+        assertEquals(busResponseDTO, result.getContent().get(0));
+
+
+        verify(busRepository, times(1)).findAll(pageable);
+        verify(busRepository, never()).findByNumberBusContainingIgnoreCase(anyString(), any(Pageable.class));
+        verify(busMapper, times(1)).toBusResponseDTO(bus);
+    }
+
+    @Test
+    @DisplayName("Debe reotnar una pagina de buses con filtro de nombre")
+    void shouldReturnPageOFBusesWithNameFilter(){
+
+        String filterName = "Spring";
+        List <Bus> buses = Collections.singletonList(bus);
+        Page<Bus> busPage = new PageImpl<>(buses, pageable, 1);
+
+        when(busRepository.findByNumberBusContainingIgnoreCase(filterName, pageable)).thenReturn(busPage);
+        when(busMapper.toBusResponseDTO(any(Bus.class))).thenReturn(busResponseDTO);
+
+        Page<BusResponseDTO> result = busService.findAll(null, pageable);
+
+        assertNotNull(result);
+        assertEquals( 1, result.getTotalElements());
+        assertEquals(1, result.getContent().size());
+        assertEquals(busResponseDTO, result.getContent().get(0));
+
+
+        verify(busRepository, never()).findByNumberBusContainingIgnoreCase(filterName, pageable);
+        verify(busRepository, never()).findAll(any(Pageable.class));
+        verify(busMapper, times(1)).toBusResponseDTO(bus);
+
+
+
+    }
 
 
 
