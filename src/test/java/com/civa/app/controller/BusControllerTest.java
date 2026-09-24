@@ -1,24 +1,35 @@
 package com.civa.app.controller;
 
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Primary;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import static org.mockito.ArgumentMatchers.any;
 
 import com.civa.app.domain.Bus;
 import com.civa.app.domain.Category;
@@ -60,6 +71,8 @@ public class BusControllerTest {
     private  BusResponseDTO busResponseDTO;
     private  Bus bus;
 
+
+    @TestConfiguration 
     static  class BusControllerTestConfig {
         
         @Bean 
@@ -127,15 +140,47 @@ public class BusControllerTest {
     }
 
 
-
-    @Test
+ @Test
     @DisplayName  ("Get /api/v1/buses/{id} - Debe retornar un bus por ID cuando existe")
     @WithMockUser(username = "testUser", roles = "USER")
     void shouldReturnBusByID()throws Exception {
 
+        when(busService.findById(anyLong())).thenReturn(bus);
+        when(busMapper.toBusResponseDTO(any(Bus.class))).thenReturn(busResponseDTO);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bus/{id}", 1L)
+        .accept(MediaType.APPLICATION_JSON)
+    
+    ) 
+
+        .andExpect(status().isOk())
+        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+        .andExpect(jsonPath("$.id").value(1))
+        .andExpect(jsonPath("$.numberBus").value("ABC-123"))
+        .andExpect(jsonPath("$.plate").value("XYZ-789"))
+        .andExpect(jsonPath("$.categoryBusName").value("Interprovincial"))
+
+        .andExpect(jsonPath("$.driverDto.length()").value(2))
+        .andExpect(jsonPath("$.driverDto[2]").doesNotExist())
+
+        // --- Verificación completa de Juan Pérez (sin asumir si es [0] o [1]) ---
+        .andExpect(jsonPath("$.driverDto[?(@.name == 'Juan Pérez')].name").value("Juan Pérez"))
+        .andExpect(jsonPath("$.driverDto[?(@.name == 'Juan Pérez')].email").value("juan.perez@example.com"))
+        .andExpect(jsonPath("$.driverDto[?(@.name == 'Juan Pérez')].bio").value("Conductor con 5 años de experiencia."))
+
+        // --- Verificación completa de María García (sin asumir si es [0] o [1]) ---
+        .andExpect(jsonPath("$.driverDto[?(@.name == 'María García')].name").value("María García"))
+        .andExpect(jsonPath("$.driverDto[?(@.name == 'María García')].email").value("maria.garcia@example.com"))
+        .andExpect(jsonPath("$.driverDto[?(@.name == 'María García')].bio").value("Conductora profesional certificada."));
+
+
+        verify(busService, times(1)).findById(1L);
+        verify(busMapper, times(1)).toBusResponseDTO(bus);
+
     }
 
 
+   
 
 
 }
