@@ -86,7 +86,7 @@ public class BusService implements IBusService {
     @Transactional
     public Bus update(Long id, BusRequestDto busRequestDto) {
         Bus existingBus =  busRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("El ID: " + id  +" no se encontro " ));
+                .orElseThrow(() -> new ResourceNotFoundException("El ID: " + id  +" no se encontro" ));
 
         busMapper.updateBusFromDTO(busRequestDto, existingBus);
 

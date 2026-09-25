@@ -1,6 +1,7 @@
 package com.civa.app.controller;
 
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -11,6 +12,7 @@ import static org.mockito.Mockito.when;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -25,6 +27,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -46,6 +51,7 @@ import com.civa.app.security.jwt.JwtAuthenticationFilter;
 import com.civa.app.security.jwt.JwtGenerator;
 import com.civa.app.service.BusService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.data.domain.Pageable;
 
 @WebMvcTest(
     controllers = BusController.class,
@@ -182,9 +188,10 @@ public class BusControllerTest {
     }
     @Test 
     @DisplayName("GET /api/v1/bus/{id} - Debe retornar 404 Not Found cuando el bus no existe" )
+    @WithMockUser(username = "testUser", roles = "USER")
     void shouldReturnNotFOuntWhenBusDoesNotExist()throws Exception {
         when(busService.findById(anyLong())).thenThrow(
-            new ResourceNotFoundException("Bus no encontra con id:99")
+            new ResourceNotFoundException("El ID: 99 no se encontro")
         );
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bus/{id}", 99L)
@@ -193,12 +200,107 @@ public class BusControllerTest {
 
             .andExpectAll(status().isNotFound())
             .andExpect(jsonPath("$.status").value(404))
-            .andExpect(jsonPath("$.message").value("Bus no encontrado con id: 99"));
+            .andExpect(jsonPath("$.message").value("El ID: 99 no se encontro"));
 
 
 
         verify(busService, times(1)).findById(99L);
         verify(busMapper, never()).toBusResponseDTO(any(Bus.class));
+
+
+
+    }
+
+    @Test
+    @DisplayName("GET /api/v1/bus - Debe retornar todos los buses paginados y filtrados")
+    @WithMockUser(username = "testUser", roles = "USER")
+    void shouldReturnAllBusPageAndFiltered() throws Exception {
+        
+        DriverResponseDto driverResponseA = new DriverResponseDto(20L, "Juan Pérez", "juan.perez@example.com", "Experto en Spring Boot.");
+        Set<DriverResponseDto> driversA = new HashSet<>(Set.of(driverResponseA));
+
+            BusResponseDTO busResponse2 = new BusResponseDTO();
+            busResponse2.setId(2L);
+            busResponse2.setNumberBus("DEF-456");
+            busResponse2.setPlate("QWE-321");
+            busResponse2.setStatus("ACTIVO");
+            busResponse2.setMarcaBus("Toyota");
+            busResponse2.setCategoryBusName("Interprovincial");
+            busResponse2.setCategoryBusId(10L);
+            busResponse2.setDriverDto(driversA); // Asigna los drivers
+
+            BusResponseDTO busResponse3 = new BusResponseDTO();
+            busResponse3.setId(3L);
+            busResponse3.setNumberBus("GHI-789");
+            busResponse3.setPlate("RTY-654");
+            busResponse3.setStatus("ACTIVO");
+            busResponse3.setMarcaBus("Toyota");
+            busResponse3.setCategoryBusName("Interprovincial");
+            busResponse3.setCategoryBusId(10L);
+            busResponse3.setDriverDto(driversA); // Asigna los mismos drivers
+
+            List<BusResponseDTO> busResponseList = List.of(busResponse2, busResponse3);
+
+            Pageable pageableMock = PageRequest.of(0, 10);
+
+            Page<BusResponseDTO> busResponseDtoPage = new PageImpl<>(busResponseList,
+                    pageableMock, busResponseList.size());
+
+
+            when(busService.findAll(eq("Spring"), any(Pageable.class))).thenReturn(busResponseDtoPage);
+
+            mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bus")
+                .param("page", "0")
+                .param("size", "10")
+                .param("numberBus", "Spring")
+                .accept(MediaType.APPLICATION_JSON)
+                
+        )
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.content[0]").exists())
+            .andExpect(jsonPath("$.content[1]").exists())
+            .andExpect(jsonPath("$.content[2]").doesNotExist())
+
+
+        // Verificar los datos del primer bus en la página
+        .andExpect(jsonPath("$.content[0].id").value(2))
+        .andExpect(jsonPath("$.content[0].numberBus").value("DEF-456"))
+        .andExpect(jsonPath("$.content[0].plate").value("QWE-321"))
+        .andExpect(jsonPath("$.content[0].status").value("ACTIVO"))
+        .andExpect(jsonPath("$.content[0].marcaBus").value("Toyota"))
+        .andExpect(jsonPath("$.content[0].categoryBusName").value("Interprovincial"))
+        .andExpect(jsonPath("$.content[0].driverDto.length()").value(1))
+        .andExpect(jsonPath("$.content[0].driverDto[?(@.name == 'Juan Pérez')].id").value(20))
+        .andExpect(jsonPath("$.content[0].driverDto[?(@.name == 'Juan Pérez')].name").value("Juan Pérez"))
+        .andExpect(jsonPath("$.content[0].driverDto[?(@.name == 'Juan Pérez')].email").value("juan.perez@example.com"))
+        .andExpect(jsonPath("$.content[0].driverDto[?(@.name == 'Juan Pérez')].bio").value("Experto en Spring Boot."))
+
+        // Verificar los datos del segundo bus en la página
+        .andExpect(jsonPath("$.content[1].id").value(3))
+        .andExpect(jsonPath("$.content[1].numberBus").value("GHI-789"))
+        .andExpect(jsonPath("$.content[1].plate").value("RTY-654"))
+        .andExpect(jsonPath("$.content[1].status").value("ACTIVO"))
+        .andExpect(jsonPath("$.content[1].marcaBus").value("Toyota"))
+        .andExpect(jsonPath("$.content[1].categoryBusName").value("Interprovincial"))
+        .andExpect(jsonPath("$.content[1].driverDto.length()").value(1))
+        .andExpect(jsonPath("$.content[1].driverDto[?(@.name == 'Juan Pérez')].id").value(20))
+        .andExpect(jsonPath("$.content[1].driverDto[?(@.name == 'Juan Pérez')].name").value("Juan Pérez"))
+        .andExpect(jsonPath("$.content[1].driverDto[?(@.name == 'Juan Pérez')].email").value("juan.perez@example.com"))
+        .andExpect(jsonPath("$.content[1].driverDto[?(@.name == 'Juan Pérez')].bio").value("Experto en Spring Boot."))
+
+
+
+        .andExpect(jsonPath("$.pageable.pageNumber").value(0))
+        .andExpect(jsonPath("$.pageable.pageSize").value(10))
+        .andExpect(jsonPath("$.totalElements").value(2))
+        .andExpect(jsonPath("$.totalPages").value(1))
+        .andExpect(jsonPath("$.last").value(true));
+
+        verify(busService, times(1)).findAll(eq("Spring"),  any(Pageable.class));
+        verify(busService, never()).findById(anyLong());
+
+
 
 
 
