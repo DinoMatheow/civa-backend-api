@@ -10,7 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 import org.junit.jupiter.api.Test;
 
@@ -393,7 +393,78 @@ public class BusControllerTest {
     }
 
 
+    @Test
+    @DisplayName("PUT /api/v1/bus/{id} - Debe actualizar un bus existente y retornar 200 OK")
+    @WithMockUser(username = "adminUser", roles = "ADMIN")
+    void shouldUpdateBusSuccessfully() throws Exception {
+         final Long busIdToUpdate = 1L; 
 
+    BusRequestDto updateBusRequestDto = new BusRequestDto();
+    updateBusRequestDto.setNumberBus("ABC-999");
+    updateBusRequestDto.setPlate("ZZZ-111");
+    updateBusRequestDto.setAttributes("Aire acondicionado, WiFi, Baño");
+    updateBusRequestDto.setStatus(Status.ACTIVO);
+    updateBusRequestDto.setCategoryBusId(11L); 
+    updateBusRequestDto.setDriversIds(Set.of(22L)); 
+
+    MarcaBus marcaBusRequest = new MarcaBus();
+    marcaBusRequest.setId(2L);
+    marcaBusRequest.setName("Volvo");
+    updateBusRequestDto.setMarcaBus(marcaBusRequest);
+
+    Bus updatedBusEntity = new Bus();
+    updatedBusEntity.setId(busIdToUpdate);
+    updatedBusEntity.setNumberBus("ABC-999");
+    updatedBusEntity.setPlate("ZZZ-111");
+    updatedBusEntity.setStatus(Status.ACTIVO);
+
+    Category newCategory = new Category(11L, "Turismo", "Eventos de turismo y excursiones");
+    MarcaBus newMarcaBus = new MarcaBus();
+    newMarcaBus.setId(2L);
+    newMarcaBus.setName("Volvo");
+    Driver newDriver = new Driver(22L, "Carlos López", "carlos.lopez@example.com", "Conductor especializado en rutas largas.", new HashSet<>());
+
+    updatedBusEntity.setCategory(newCategory);
+    updatedBusEntity.setMarcaBus(newMarcaBus);
+    updatedBusEntity.addDrivers(newDriver);
+
+    BusResponseDTO updatedBusResponseDTO = new BusResponseDTO();
+    updatedBusResponseDTO.setId(busIdToUpdate);
+    updatedBusResponseDTO.setNumberBus("ABC-999");
+    updatedBusResponseDTO.setPlate("ZZZ-111");
+    updatedBusResponseDTO.setStatus("ACTIVO");
+    updatedBusResponseDTO.setMarcaBus("Volvo");
+    updatedBusResponseDTO.setCategoryBusName("Turismo");
+    updatedBusResponseDTO.setCategoryBusId(11L);
+    updatedBusResponseDTO.setDriverDto(Set.of(new DriverResponseDto(22L, "Carlos López", "carlos.lopez@example.com", "Conductor especializado en rutas largas.")));
+
+    when(busService.update(eq(busIdToUpdate), any(BusRequestDto.class))).thenReturn(updatedBusEntity);
+    when(busMapper.toBusResponseDTO(updatedBusEntity)).thenReturn(updatedBusResponseDTO);
+
+    mockMvc.perform(put("/api/v1/bus/{id}", busIdToUpdate) 
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(updateBusRequestDto))) 
+
+            .andExpect(status().isOk()) 
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.id").value(busIdToUpdate))
+            .andExpect(jsonPath("$.numberBus").value("ABC-999"))
+            .andExpect(jsonPath("$.plate").value("ZZZ-111"))
+            .andExpect(jsonPath("$.status").value("ACTIVO"))
+            .andExpect(jsonPath("$.marcaBus").value("Volvo"))
+            .andExpect(jsonPath("$.categoryBusName").value("Turismo"))
+            .andExpect(jsonPath("$.categoryBusId").value(11))
+            .andExpect(jsonPath("$.driverDto.length()").value(1))
+            .andExpect(jsonPath("$.driverDto[0].id").value(22))
+            .andExpect(jsonPath("$.driverDto[0].name").value("Carlos López"));
+
+    verify(busService, times(1)).update(eq(busIdToUpdate), any(BusRequestDto.class));
+    verify(busMapper, times(1)).toBusResponseDTO(updatedBusEntity);
+
+    verify(busService, never()).save(any(BusRequestDto.class)); 
+    verify(busService, never()).findAll(anyString(), any(Pageable.class));
+    verify(busService, never()).findById(anyLong());
+    }
 
 
 
