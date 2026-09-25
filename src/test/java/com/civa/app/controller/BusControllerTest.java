@@ -2,6 +2,7 @@ package com.civa.app.controller;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -38,6 +39,7 @@ import com.civa.app.domain.MarcaBus;
 import com.civa.app.domain.Status;
 import com.civa.app.dto.BusResponseDTO;
 import com.civa.app.dto.DriverResponseDto;
+import com.civa.app.exception.ResourceNotFoundException;
 import com.civa.app.mapper.BusMapper;
 import com.civa.app.security.jwt.JwtAuthEntryPoint;
 import com.civa.app.security.jwt.JwtAuthenticationFilter;
@@ -178,6 +180,41 @@ public class BusControllerTest {
         verify(busMapper, times(1)).toBusResponseDTO(bus);
 
     }
+    @Test 
+    @DisplayName("GET /api/v1/bus/{id} - Debe retornar 404 Not Found cuando el bus no existe" )
+    void shouldReturnNotFOuntWhenBusDoesNotExist()throws Exception {
+        when(busService.findById(anyLong())).thenThrow(
+            new ResourceNotFoundException("Bus no encontra con id:99")
+        );
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/bus/{id}", 99L)
+        .accept(MediaType.APPLICATION_JSON))
+
+
+            .andExpectAll(status().isNotFound())
+            .andExpect(jsonPath("$.status").value(404))
+            .andExpect(jsonPath("$.message").value("Bus no encontrado con id: 99"));
+
+
+
+        verify(busService, times(1)).findById(99L);
+        verify(busMapper, never()).toBusResponseDTO(any(Bus.class));
+
+
+
+    }
+
+   
+
+
+
+
+
+
+
+
+
+
 
 
    
