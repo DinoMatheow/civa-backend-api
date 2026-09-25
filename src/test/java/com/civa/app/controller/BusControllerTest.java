@@ -1,6 +1,7 @@
 package com.civa.app.controller;
 
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -8,6 +9,8 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
 
 import org.junit.jupiter.api.Test;
 
@@ -42,6 +45,7 @@ import com.civa.app.domain.Category;
 import com.civa.app.domain.Driver;
 import com.civa.app.domain.MarcaBus;
 import com.civa.app.domain.Status;
+import com.civa.app.dto.BusRequestDto;
 import com.civa.app.dto.BusResponseDTO;
 import com.civa.app.dto.DriverResponseDto;
 import com.civa.app.exception.ResourceNotFoundException;
@@ -307,6 +311,79 @@ public class BusControllerTest {
     }
 
    
+
+    @Test
+    @DisplayName("POST /api/v1/bus - Debe crear un bus y retornar 201 Created")
+    @WithMockUser(username = "adminUser", roles = "ADMIN")
+    void shouldCreateBusSuccedfully() throws Exception {
+
+    BusRequestDto busRequestDto = new BusRequestDto();
+    busRequestDto.setNumberBus("JKL-321");
+    busRequestDto.setPlate("MNO-654");
+    busRequestDto.setCategoryBusId(10L);
+    busRequestDto.setDriversIds(Set.of(20L, 21L));
+
+    Bus savedBusEntity = new Bus();
+    savedBusEntity.setId(5L); // El nuevo ID asignado
+    savedBusEntity.setNumberBus("JKL-321");
+    savedBusEntity.setPlate("MNO-654");
+    savedBusEntity.setStatus(Status.ACTIVO);
+
+    MarcaBus marcaBusForSavedBus = new MarcaBus();
+    marcaBusForSavedBus.setId(1L);
+    marcaBusForSavedBus.setName("Toyota");
+
+    Category categoryForSavedBus = new Category(10L, "Interprovincial", "Buses de larga distancia");
+    Driver driver1ForSavedBus = new Driver(20L, "Juan Pérez", "juan.perez@example.com", "Conductor con 5 años de experiencia.", new HashSet<>());
+    Driver driver2ForSavedBus = new Driver(21L, "María García", "maria.garcia@example.com", "Conductora profesional certificada.", new HashSet<>());
+
+    savedBusEntity.setMarcaBus(marcaBusForSavedBus);
+    savedBusEntity.setCategory(categoryForSavedBus);
+    savedBusEntity.addDrivers(driver1ForSavedBus);
+    savedBusEntity.addDrivers(driver2ForSavedBus);
+
+    BusResponseDTO createdBusResponseDTO = new BusResponseDTO();
+    createdBusResponseDTO.setId(5L);
+    createdBusResponseDTO.setNumberBus("JKL-321");
+    createdBusResponseDTO.setPlate("MNO-654");
+    createdBusResponseDTO.setStatus("ACTIVO");
+    createdBusResponseDTO.setMarcaBus("Toyota");
+    createdBusResponseDTO.setCategoryBusName("Interprovincial");
+    createdBusResponseDTO.setCategoryBusId(10L);
+
+    DriverResponseDto driverResponse1 = new DriverResponseDto(20L, "Juan Pérez", "juan.perez@example.com", "Conductor con 5 años de experiencia.");
+    DriverResponseDto driverResponse2 = new DriverResponseDto(21L, "María García", "maria.garcia@example.com", "Conductora profesional certificada.");
+    Set<DriverResponseDto> driversDto = new HashSet<>();
+    driversDto.add(driverResponse1);
+    driversDto.add(driverResponse2);
+    createdBusResponseDTO.setDriverDto(driversDto);
+
+    when(busService.save(any(BusRequestDto.class))).thenReturn(savedBusEntity);
+    when(busMapper.toBusResponseDTO(savedBusEntity)).thenReturn(createdBusResponseDTO);
+
+    mockMvc.perform(post("/api/v1/bus") 
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(busRequestDto)))
+
+            .andExpect(status().isCreated()) 
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.id").value(5))
+            .andExpect(jsonPath("$.numberBus").value("JKL-321"))
+            .andExpect(jsonPath("$.plate").value("MNO-654"))
+            .andExpect(jsonPath("$.status").value("ACTIVO"))
+            .andExpect(jsonPath("$.marcaBus").value("Toyota"))
+            .andExpect(jsonPath("$.categoryBusName").value("Interprovincial"))
+            .andExpect(jsonPath("$.driverDto.length()").value(2))
+            .andExpect(jsonPath("$.driverDto[?(@.name == 'Juan Pérez')].id").value(20))
+            .andExpect(jsonPath("$.driverDto[?(@.name == 'María García')].id").value(21));
+
+    verify(busService, times(1)).save(any(BusRequestDto.class));
+    verify(busMapper, times(1)).toBusResponseDTO(savedBusEntity); 
+
+    verify(busService, never()).findAll(anyString(), any(Pageable.class));
+    verify(busService, never()).findById(anyLong());
+
+    }
 
 
 
