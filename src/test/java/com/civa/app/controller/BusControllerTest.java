@@ -321,7 +321,14 @@ public class BusControllerTest {
     busRequestDto.setNumberBus("JKL-321");
     busRequestDto.setPlate("MNO-654");
     busRequestDto.setCategoryBusId(10L);
+    busRequestDto.setAttributes("Aire acondicionado, WiFi");   // ← faltaba
+    busRequestDto.setStatus(Status.ACTIVO);        
     busRequestDto.setDriversIds(Set.of(20L, 21L));
+
+    MarcaBus marcaBusRequest = new MarcaBus();                  // ← faltaba
+    marcaBusRequest.setId(1L);
+    marcaBusRequest.setName("Toyota");
+    busRequestDto.setMarcaBus(marcaBusRequest);
 
     Bus savedBusEntity = new Bus();
     savedBusEntity.setId(5L); // El nuevo ID asignado
