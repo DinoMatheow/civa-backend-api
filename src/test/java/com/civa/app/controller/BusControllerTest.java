@@ -503,6 +503,7 @@ public class BusControllerTest {
     }
 
 
+   
     @Test
     @DisplayName("DELETE /api/v1/bus/{id} - Debe retornar 404 Not Fount si el bus a eliminar no existe")
     @WithMockUser(username = "adminUser", roles = "ADMIN")
@@ -523,12 +524,7 @@ public class BusControllerTest {
             verify(busMapper, never()).toBusResponseDTO(any(Bus.class));
 
 
-
-
-            
-
     }
-
 
 
 
