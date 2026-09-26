@@ -3,12 +3,14 @@ package com.civa.app.controller;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
@@ -392,6 +394,21 @@ public class BusControllerTest {
 
     }
 
+    @Test
+    @DisplayName("DELETE /api/v1/bus{id}")
+    @WithMockUser(username = "adminUser", roles = "ADMIN")
+    void shouldDeleteBusSuccesfulyy() throws Exception{
+        final Long busIdToDelete = 1L;
+        
+        doNothing().when(busService).deleteById(busIdToDelete);
+
+        mockMvc.perform(delete("/api/v1/bus/{id}", busIdToDelete))
+            .andExpect(status().isNoContent());
+
+        verify(busService, times(1)).deleteById(busIdToDelete);
+        verify(busMapper, never()).toBusResponseDTO(any(Bus.class));
+
+    }
 
     @Test
     @DisplayName("PUT /api/v1/bus/{id} - Debe actualizar un bus existente y retornar 200 OK")
