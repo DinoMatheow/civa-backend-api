@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
@@ -482,6 +483,52 @@ public class BusControllerTest {
     verify(busService, never()).findAll(anyString(), any(Pageable.class));
     verify(busService, never()).findById(anyLong());
     }
+
+    @Test
+    @DisplayName("DELETE /api/v1/bus/{id} - Debe eliminar un bus y retornar 204 No Content")
+    @WithMockUser(username = "adminUser", roles = "ADMIN")
+    void shouldDeleteBusSuccesfully()throws Exception {
+
+        final Long busIdToDelete = 1L;
+
+        doNothing().when(busService).deleteById(busIdToDelete);
+
+        mockMvc.perform(delete("/api/v1/bus/{id}", busIdToDelete))
+            .andExpect(status().isNoContent());
+
+
+        verify(busService, times(1)).deleteById(busIdToDelete);
+        verify(busMapper, never()).toBusResponseDTO(any(Bus.class));
+
+    }
+
+
+    @Test
+    @DisplayName("DELETE /api/v1/bus/{id} - Debe retornar 404 Not Fount si el bus a eliminar no existe")
+    @WithMockUser(username = "adminUser", roles = "ADMIN")
+    void shouldReturnNotFountWhenDeletingNonExistentBus()throws Exception {
+
+        final Long nonExistentBusId = 999L;
+
+        doThrow(new ResourceNotFoundException("El ID: " + nonExistentBusId  +" no se encontro"))
+            .when(busService).deleteById(nonExistentBusId);
+
+            mockMvc.perform(delete("/api/v1/bus/{id}", nonExistentBusId ))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.status").value(404))
+            .andExpect(jsonPath("$.error").value("Not Found"))
+            .andExpect(jsonPath("$.message").value("El ID: " + nonExistentBusId  +" no se encontro"));
+            
+            verify(busService, times(1)).deleteById(nonExistentBusId);
+            verify(busMapper, never()).toBusResponseDTO(any(Bus.class));
+
+
+
+
+            
+
+    }
+
 
 
 
