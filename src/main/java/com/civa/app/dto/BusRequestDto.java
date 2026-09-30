@@ -12,6 +12,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
+@Schema(description = "Detalles de la solicitud para crear o actualizar un bus")
 public class BusRequestDto {
     @NotBlank(message = "El número del bus no puede estar vacío")
     private String numberBus;
