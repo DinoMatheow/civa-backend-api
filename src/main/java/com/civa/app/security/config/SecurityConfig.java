@@ -32,6 +32,7 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final JwtAuthEntryPoint jwtAuthEntryPoint;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final Environment enviroment;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -40,17 +41,19 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth-> 
+                .authorizeHttpRequests(auth-> {
                     auth
                     .requestMatchers("/api/v1/auth/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/v1/bus/**" ).permitAll()
-                    .requestMatchers("/swagger-ui/**").permitAll()
-                    .requestMatchers("/v3/api-docs/**").permitAll()
-                    .requestMatchers("/v3/api-docs.yaml").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/bus/**" ).permitAll();
+                    if(enviroment.acceptsProfiles(Profiles.of("dev"))){
+                     auth.requestMatchers(
+                        "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"
+                     ).permitAll();
+                    }
+                    anyRequest().authenticated();
+                });
 
-                    .anyRequest().authenticated()
-                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
                 return http.build();
     }
 
