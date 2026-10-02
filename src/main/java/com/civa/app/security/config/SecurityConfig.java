@@ -19,6 +19,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 
 import com.civa.app.security.jwt.JwtAuthEntryPoint;
 import com.civa.app.security.jwt.JwtAuthenticationFilter;
@@ -50,7 +52,7 @@ public class SecurityConfig {
                         "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"
                      ).permitAll();
                     }
-                    anyRequest().authenticated();
+                    auth.anyRequest().authenticated();
                 });
 
                 http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
