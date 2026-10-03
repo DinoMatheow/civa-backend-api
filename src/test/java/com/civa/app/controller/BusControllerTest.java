@@ -178,12 +178,10 @@ public class BusControllerTest {
         .andExpect(jsonPath("$.driverDto.length()").value(2))
         .andExpect(jsonPath("$.driverDto[2]").doesNotExist())
 
-        // --- Verificación completa de Juan Pérez (sin asumir si es [0] o [1]) ---
         .andExpect(jsonPath("$.driverDto[?(@.name == 'Juan Pérez')].name").value("Juan Pérez"))
         .andExpect(jsonPath("$.driverDto[?(@.name == 'Juan Pérez')].email").value("juan.perez@example.com"))
         .andExpect(jsonPath("$.driverDto[?(@.name == 'Juan Pérez')].bio").value("Conductor con 5 años de experiencia."))
 
-        // --- Verificación completa de María García (sin asumir si es [0] o [1]) ---
         .andExpect(jsonPath("$.driverDto[?(@.name == 'María García')].name").value("María García"))
         .andExpect(jsonPath("$.driverDto[?(@.name == 'María García')].email").value("maria.garcia@example.com"))
         .andExpect(jsonPath("$.driverDto[?(@.name == 'María García')].bio").value("Conductora profesional certificada."));
@@ -234,7 +232,7 @@ public class BusControllerTest {
             busResponse2.setMarcaBus("Toyota");
             busResponse2.setCategoryBusName("Interprovincial");
             busResponse2.setCategoryBusId(10L);
-            busResponse2.setDriverDto(driversA); // Asigna los drivers
+            busResponse2.setDriverDto(driversA); 
 
             BusResponseDTO busResponse3 = new BusResponseDTO();
             busResponse3.setId(3L);
@@ -244,7 +242,7 @@ public class BusControllerTest {
             busResponse3.setMarcaBus("Toyota");
             busResponse3.setCategoryBusName("Interprovincial");
             busResponse3.setCategoryBusId(10L);
-            busResponse3.setDriverDto(driversA); // Asigna los mismos drivers
+            busResponse3.setDriverDto(driversA); 
 
             List<BusResponseDTO> busResponseList = List.of(busResponse2, busResponse3);
 
@@ -324,17 +322,17 @@ public class BusControllerTest {
     busRequestDto.setNumberBus("JKL-321");
     busRequestDto.setPlate("MNO-654");
     busRequestDto.setCategoryBusId(10L);
-    busRequestDto.setAttributes("Aire acondicionado, WiFi");   // ← faltaba
+    busRequestDto.setAttributes("Aire acondicionado, WiFi");   
     busRequestDto.setStatus(Status.ACTIVO);        
     busRequestDto.setDriversIds(Set.of(20L, 21L));
 
-    MarcaBus marcaBusRequest = new MarcaBus();                  // ← faltaba
+    MarcaBus marcaBusRequest = new MarcaBus();                  
     marcaBusRequest.setId(1L);
     marcaBusRequest.setName("Toyota");
     busRequestDto.setMarcaBus(marcaBusRequest);
 
     Bus savedBusEntity = new Bus();
-    savedBusEntity.setId(5L); // El nuevo ID asignado
+    savedBusEntity.setId(5L); 
     savedBusEntity.setNumberBus("JKL-321");
     savedBusEntity.setPlate("MNO-654");
     savedBusEntity.setStatus(Status.ACTIVO);

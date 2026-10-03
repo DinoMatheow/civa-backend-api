@@ -19,6 +19,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 
 import com.civa.app.domain.Bus;
@@ -34,6 +38,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/v1/bus")
 @RequiredArgsConstructor
+@Tag(name = "Bus Controller", description = "Controller for managing buses")
 public class BusController {
     
     private final IBusService busService;
@@ -75,6 +80,13 @@ public class BusController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Get bus by ID", description = "Retrieve a bus by its ID")
+    // @ApiResponse(
+    //     value = {
+    //         @ApiResponse(responseCode = "200", description = "Bus found"),
+    //         @ApiResponse(responseCode = "404", description = "Bus not found")
+    //     }
+    // )
     // @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<BusResponseDTO> getBusById(@PathVariable Long id) {
         Bus bus = busService.findById(id);

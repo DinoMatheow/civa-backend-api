@@ -19,6 +19,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 
 import com.civa.app.security.jwt.JwtAuthEntryPoint;
 import com.civa.app.security.jwt.JwtAuthenticationFilter;
@@ -32,6 +34,7 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final JwtAuthEntryPoint jwtAuthEntryPoint;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final Environment enviroment;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -40,13 +43,19 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtAuthEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth-> 
+                .authorizeHttpRequests(auth-> {
                     auth
                     .requestMatchers("/api/v1/auth/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/v1/bus/**" ).permitAll()
-                    .anyRequest().authenticated()
-                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                    .requestMatchers(HttpMethod.GET, "/api/v1/bus/**" ).permitAll();
+                    if(enviroment.acceptsProfiles(Profiles.of("dev"))){
+                     auth.requestMatchers(
+                        "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"
+                     ).permitAll();
+                    }
+                    auth.anyRequest().authenticated();
+                });
+
+                http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
                 return http.build();
     }
 
