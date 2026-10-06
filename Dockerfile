@@ -1,6 +1,8 @@
 FROM eclipse-temurin:21-jdk AS build 
 WORKDIR /app 
 COPY . .
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
 RUN ./mvnw clean package -DskipTests
 
 
