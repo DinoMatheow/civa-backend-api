@@ -3,6 +3,8 @@ package com.civa.app.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -42,6 +44,7 @@ import lombok.RequiredArgsConstructor;
 public class BusController {
     
     private final IBusService busService;
+    private static final Logger logger = LoggerFactory.getLogger(BusController.class);
     private final BusMapper busMapper;
 
 
@@ -74,8 +77,10 @@ public class BusController {
         @RequestParam(required = false)String numberBus,
         @PageableDefault(page = 0, size = 5, sort = "numberBus")Pageable pageable
     ) {
-        
+        logger.info("Recibida solicitud para obtener todos los buses con númeroBus: {}", numberBus, pageable);
         Page<BusResponseDTO> buses = busService.findAll(numberBus, pageable);
+
+        logger.debug("Buses obtenidos exitosamente: {}", buses.getNumberOfElements());
         return ResponseEntity.ok(buses);
     }
 
@@ -97,8 +102,11 @@ public class BusController {
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<BusResponseDTO> createBus(@Valid @RequestBody BusRequestDto busRequestDto) {
+        logger.info("Recibida solicitud para crear bus: {}", busRequestDto.getNumberBus());
         Bus savedBus = busService.save(busRequestDto);
         BusResponseDTO busResponseDTO = busMapper.toBusResponseDTO(savedBus);
+
+        logger.debug("Bus creado exitosamente... {}", savedBus.getNumberBus());
 
         return new ResponseEntity<>(busResponseDTO, HttpStatus.CREATED);
     
