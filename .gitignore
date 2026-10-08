@@ -1,3 +1,5 @@
+.logs/
+
 .env
 HELP.md
 target/
@@ -32,3 +34,9 @@ build/
 
 ### VS Code ###
 .vscode/
+171001
+171001.pub
+*.pub
+id_*
+.env
+logs/
