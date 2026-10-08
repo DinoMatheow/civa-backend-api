@@ -44,7 +44,8 @@ public class Bus {
     @Column(name = "attributes", nullable = false)
     private String attributes;
 
-    @Column(name = "status", nullable = false   )
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
     private Status status;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
