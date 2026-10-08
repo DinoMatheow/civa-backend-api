@@ -40,4 +40,7 @@ public class Trip {
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
     private LocalDateTime createdAt;
+
+    @Column(name = "trip_code", unique = true, nullable = false, updatable = false)
+    private String tripCode;
 }
