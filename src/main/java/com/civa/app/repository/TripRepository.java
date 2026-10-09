@@ -23,7 +23,7 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
     @Override
     @EntityGraph(attributePaths = {"origin", "destination", "bus","bus.category"})
     List<Trip> findAll();
-
+    
     @EntityGraph(attributePaths = {"origin", "destination", "bus", "bus.category"})
     Optional<Trip> findByTripCode(String tripCode);
 

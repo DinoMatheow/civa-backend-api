@@ -3,8 +3,11 @@ package com.civa.app.dto;
 import java.time.LocalDate;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
-public class TripSearchTrip {
+
+@Data 
+public class TripSearchRequestDto {
     
     @NotNull
     private Long originCityId;
