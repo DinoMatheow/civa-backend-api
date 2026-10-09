@@ -27,7 +27,7 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
     @EntityGraph(attributePaths = {"origin", "destination", "bus"})
     Optional<Trip> findByTripCode(String tripCode);
 
-    @EntityGraph(attributePaths = {"origin", "destination", "bus"})
+    @EntityGraph(attributePaths = {"origin", "destination", "bus", "bus.category"})
     @Query("""
         SELECT t FROM Trip t
         WHERE t.origin.id = :originId
