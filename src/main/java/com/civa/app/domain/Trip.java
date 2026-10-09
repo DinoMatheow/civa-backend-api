@@ -1,6 +1,12 @@
 package com.civa.app.domain;
 
 import lombok.Data;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+
 import jakarta.persistence.*;
 
 
@@ -35,7 +41,7 @@ public class Trip {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TripStatus status;   
+    private TripStatusEnum status;   
 
     @CreationTimestamp
     @Column(updatable = false, nullable = false)
@@ -43,4 +49,8 @@ public class Trip {
 
     @Column(name = "trip_code", unique = true, nullable = false, updatable = false)
     private String tripCode;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "bus_id")
+    private Bus bus;
 }

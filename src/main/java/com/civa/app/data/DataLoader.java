@@ -10,11 +10,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.civa.app.domain.Bus;
+import com.civa.app.domain.BusStatusEnum;
 import com.civa.app.domain.Category;
 import com.civa.app.domain.Driver;
 import com.civa.app.domain.MarcaBus;
 import com.civa.app.domain.Role;
-import com.civa.app.domain.Status;
 import com.civa.app.domain.User;
 import com.civa.app.repository.BusRepository;
 import com.civa.app.repository.CategoryRepository;
@@ -102,7 +102,7 @@ public class DataLoader implements CommandLineRunner {
                 bus.setNumberBus("Bus #" + String.format("%03d", i) );
                 bus.setAttributes("Actulizando...");
                 bus.setPlate("ABC-" + (100 + i));
-                bus.setStatus(Status.ACTIVO);
+                bus.setStatus(BusStatusEnum.ACTIVO);
                 bus.setMarcaBus(marcaBus);
             
                 buses.add(bus);

@@ -2,17 +2,17 @@ package com.civa.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-public enum Status {
+public enum TripStatusEnum {
     PROGRAMADO,   
     EN_CURSO,     
     FINALIZADO,   
     CANCELADO;
 
     @JsonCreator
-    public static Status fromValue(String value){
+    public static TripStatusEnum fromValue(String value){
         if(value == null){ return null; }
         
-        return Status.valueOf(value.toUpperCase().trim());
+        return TripStatusEnum.valueOf(value.toUpperCase().trim());
     }
   
 }

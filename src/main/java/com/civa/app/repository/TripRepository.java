@@ -1,9 +1,20 @@
 package com.civa.app.repository;
 
 import org.springframework.data.domain.Pageable;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import com.civa.app.domain.Trip;
+import com.civa.app.domain.TripStatusEnum;
 
 @Repository
 public interface TripRepository extends JpaRepository<Trip, Long> {
@@ -29,7 +40,7 @@ public interface TripRepository extends JpaRepository<Trip, Long> {
                       @Param("destinationId") Long destinationId,
                       @Param("startTime") LocalDateTime startTime,
                       @Param("endTime") LocalDateTime endTime,
-                      @Param("status") TripStatus status,
+                      @Param("status") TripStatusEnum status,
                       Pageable pageable);
 
 
