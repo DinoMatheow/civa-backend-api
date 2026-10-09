@@ -129,7 +129,7 @@ public class BusServiceTest {
     void shouldSaveBusSuccesFulyWithCategory(){
         Bus  busWithoutId = new Bus();
         busWithoutId.setNumberBus(busRequestDto.getNumberBus());
-        busWithoutId.setMarcaBus(busRequestDto.getMarcaBus());
+        // busWithoutId.setMarcaBus(busRequestDto.getMarcaBusId());
         busWithoutId.setPlate(busRequestDto.getPlate());
         busWithoutId.setStatus(busRequestDto.getStatus());
         when(busMapper.toEntity(any(BusRequestDto.class))).thenReturn(busWithoutId);

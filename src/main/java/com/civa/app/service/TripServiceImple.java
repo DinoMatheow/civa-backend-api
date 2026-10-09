@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor 
-public class TripServiceImple {
+public class TripServiceImple  implements TripService {
     
     private final TripRepository tripRepository;
     private final TripMapper tripMapper;

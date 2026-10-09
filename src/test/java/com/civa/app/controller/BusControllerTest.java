@@ -329,7 +329,7 @@ public class BusControllerTest {
     MarcaBus marcaBusRequest = new MarcaBus();                  
     marcaBusRequest.setId(1L);
     marcaBusRequest.setName("Toyota");
-    busRequestDto.setMarcaBus(marcaBusRequest);
+    // busRequestDto.setMarcaBus(marcaBusRequest);
 
     Bus savedBusEntity = new Bus();
     savedBusEntity.setId(5L); 
@@ -426,7 +426,7 @@ public class BusControllerTest {
     MarcaBus marcaBusRequest = new MarcaBus();
     marcaBusRequest.setId(2L);
     marcaBusRequest.setName("Volvo");
-    updateBusRequestDto.setMarcaBus(marcaBusRequest);
+    // updateBusRequestDto.setMarcaBus(marcaBusRequest);
 
     Bus updatedBusEntity = new Bus();
     updatedBusEntity.setId(busIdToUpdate);
