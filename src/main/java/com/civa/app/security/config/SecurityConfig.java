@@ -46,7 +46,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth-> {
                     auth
                     .requestMatchers("/api/v1/auth/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/trip/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/bus/**" ).permitAll();
+                    
                     if(enviroment.acceptsProfiles(Profiles.of("dev"))){
                      auth.requestMatchers(
                         "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"
