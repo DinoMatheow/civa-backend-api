@@ -4,8 +4,6 @@
 import java.util.Set;
 
 import com.civa.app.domain.BusStatusEnum;
-import com.civa.app.domain.MarcaBus;
-
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -29,7 +27,7 @@ public class BusRequestDto {
     
     @NotNull(message = "La marca del bus no puede ser nula")
     @Valid
-    private MarcaBus marcaBus;
+    private Long marcaBusId;
 
     @NotNull(message = "La categoría del bus no puede ser nula")
     private Long categoryBusId;
