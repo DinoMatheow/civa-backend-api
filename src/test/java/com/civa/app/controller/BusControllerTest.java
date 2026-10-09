@@ -44,10 +44,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.mockito.ArgumentMatchers.any;
 
 import com.civa.app.domain.Bus;
+import com.civa.app.domain.BusStatusEnum;
 import com.civa.app.domain.Category;
 import com.civa.app.domain.Driver;
 import com.civa.app.domain.MarcaBus;
-import com.civa.app.domain.Status;
 import com.civa.app.dto.BusRequestDto;
 import com.civa.app.dto.BusResponseDTO;
 import com.civa.app.dto.DriverResponseDto;
@@ -126,7 +126,7 @@ public class BusControllerTest {
         bus.setId(1L);
         bus.setNumberBus("ABC-123");
         bus.setPlate("XYZ-789");
-        bus.setStatus(Status.ACTIVO);
+        bus.setStatus(BusStatusEnum.ACTIVO);
         bus.setMarcaBus(marcaBus);
         bus.setCategory(category);
         bus.addDrivers(driver1);
@@ -323,7 +323,7 @@ public class BusControllerTest {
     busRequestDto.setPlate("MNO-654");
     busRequestDto.setCategoryBusId(10L);
     busRequestDto.setAttributes("Aire acondicionado, WiFi");   
-    busRequestDto.setStatus(Status.ACTIVO);        
+    busRequestDto.setStatus(BusStatusEnum.ACTIVO);        
     busRequestDto.setDriversIds(Set.of(20L, 21L));
 
     MarcaBus marcaBusRequest = new MarcaBus();                  
@@ -335,7 +335,7 @@ public class BusControllerTest {
     savedBusEntity.setId(5L); 
     savedBusEntity.setNumberBus("JKL-321");
     savedBusEntity.setPlate("MNO-654");
-    savedBusEntity.setStatus(Status.ACTIVO);
+    savedBusEntity.setStatus(BusStatusEnum.ACTIVO);
 
     MarcaBus marcaBusForSavedBus = new MarcaBus();
     marcaBusForSavedBus.setId(1L);
@@ -419,7 +419,7 @@ public class BusControllerTest {
     updateBusRequestDto.setNumberBus("ABC-999");
     updateBusRequestDto.setPlate("ZZZ-111");
     updateBusRequestDto.setAttributes("Aire acondicionado, WiFi, Baño");
-    updateBusRequestDto.setStatus(Status.ACTIVO);
+    updateBusRequestDto.setStatus(BusStatusEnum.ACTIVO);
     updateBusRequestDto.setCategoryBusId(11L); 
     updateBusRequestDto.setDriversIds(Set.of(22L)); 
 
@@ -432,7 +432,7 @@ public class BusControllerTest {
     updatedBusEntity.setId(busIdToUpdate);
     updatedBusEntity.setNumberBus("ABC-999");
     updatedBusEntity.setPlate("ZZZ-111");
-    updatedBusEntity.setStatus(Status.ACTIVO);
+    updatedBusEntity.setStatus(BusStatusEnum.ACTIVO);
 
     Category newCategory = new Category(11L, "Turismo", "Eventos de turismo y excursiones");
     MarcaBus newMarcaBus = new MarcaBus();
