@@ -2,15 +2,15 @@ package com.civa.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-public enum Status {
+public enum BusStatusEnum {
     ACTIVO,
     INACTIVO;
 
     @JsonCreator
-    public static Status fromValue(String value){
+    public static BusStatusEnum fromValue(String value){
         if(value == null){ return null; }
         
-        return Status.valueOf(value.toUpperCase().trim());
+        return BusStatusEnum.valueOf(value.toUpperCase().trim());
     }
   
 }

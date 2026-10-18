@@ -20,6 +20,7 @@ public interface BusMapper {
    @Mapping(target = "category", ignore = true )
    @Mapping(target = "drivers", ignore = true )
    @Mapping(target = "attendedUsers", ignore = true )
+   @Mapping(target = "marcaBus", ignore = true)
     Bus toEntity(BusRequestDto busRequestDto);
 
     @Mapping(source = "marcaBus.name", target = "marcaBus")
@@ -34,6 +35,8 @@ public interface BusMapper {
    @Mapping(target = "category", ignore = true)
    @Mapping(target = "drivers", ignore = true)
    @Mapping(target = "attendedUsers", ignore = true)
+   @Mapping(target = "marcaBus", ignore = true)
+   @Mapping(target = "createdAt", ignore = true)
     void updateBusFromDTO(BusRequestDto busRequestDto, @MappingTarget Bus bus);
 
     BusSummaryDto toSummaryDto(Bus bus);
